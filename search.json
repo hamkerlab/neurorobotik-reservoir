@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Neurorobotik - Reservoir computing",
+    "section": "",
+    "text": "The slides of the lecture are available here (or simply press 'f' in the frame below)."
+  },
+  {
+    "objectID": "index.html#lecture",
+    "href": "index.html#lecture",
+    "title": "Neurorobotik - Reservoir computing",
+    "section": "",
+    "text": "The slides of the lecture are available here (or simply press 'f' in the frame below)."
+  },
+  {
+    "objectID": "index.html#practicals",
+    "href": "index.html#practicals",
+    "title": "Neurorobotik - Reservoir computing",
+    "section": "Practicals",
+    "text": "Practicals\n\n\n\n\n\n\nNotebook\nSolution\n\n\n\n\n1 - Vanilla ESN\nSimple ESN with the readout trained offline.\nipynb, colab\nipynb, colab\n\n\n2 - FORCE learning\nFORCE learning as introduced in (Sussillo and Abbott, 2009).\nipynb, colab\nipynb, colab"
+  }
+]
