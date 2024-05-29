@@ -1,0 +1,33 @@
+project:
+  type: website
+  render:
+    - "*.qmd"
+  output-dir: ./docs
+
+
+website:
+  search: true
+
+  navbar:
+    background: white
+    foreground: black
+    pinned: true
+    right:
+      - text: "Materials"
+        file: index.qmd
+      - icon: github
+        href: https://github.com/hamkerlab/neurorobotik-reservoir
+        aria-label: GitHub
+
+  page-footer: "Copyright Julien Vitay - <julien.vitay@informatik.tu-chemnitz.de>" 
+
+format:
+  html:
+    theme: [sandstone, assets/website.scss]
+    page-layout: full
+    number-depth: 2
+    number-sections: false
+    toc: false
+    smooth-scroll: true
+    html-math-method: katex
+    callout-appearance: minimal

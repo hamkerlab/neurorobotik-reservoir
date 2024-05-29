@@ -1,0 +1,5 @@
+*.DS_Store
+.quarto
+/.quarto/
+docs/
+notebooks/*.pdf
