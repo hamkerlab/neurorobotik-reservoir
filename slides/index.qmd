@@ -191,12 +191,12 @@ $$
 * The position $x, y, z$ of a particle is describe by a set of 3 **deterministic** ordinary differential equations:
 
 ::: {.columns}
-::: {.column width=60%}
+::: {.column width=50%}
 
-{{< video videos/lorenzattractor.mp4 >}}
+{{< video https://youtu.be/dP3qAq9RNLg width="600" aspect-ratio="16x9" >}}
 
 :::
-::: {.column width=40%}
+::: {.column width=50%}
 
 $$
 \begin{cases}
