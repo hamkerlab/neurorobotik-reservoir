@@ -271,6 +271,12 @@ reg.fit(r, t)
 
 # Applications of  Reservoir Computing
 
+:::footer
+See @Zhang2023.
+:::
+
+# Applications of  Reservoir Computing
+
 * **Forecasting**: ESN are able to predict the future of chaotic systems (stock market, weather) much better than static NN.
 
 ![](img/rc-forecasting.png){width=80% fig-align="center"}
@@ -488,7 +494,7 @@ $$
 * The readout weights will be updated online using the error, the input and $P$:
 
 $$
-    \Delta W^\text{OUT} = - \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times P \times \mathbf{r}_t
+    \Delta W^\text{OUT} = \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times P \times \mathbf{r}_t
 $$
 
 where $P$ is a running estimate of the inverse information matrix of the input :
@@ -511,7 +517,7 @@ and the weight updates are also normalized:
 
 
 $$
-    \Delta W^\text{OUT} = - \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times \dfrac{P}{1 + \mathbf{r}_t^T \times P \times \mathbf{r}_t} \times \mathbf{r}_t
+    \Delta W^\text{OUT} = \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times \dfrac{P}{1 + \mathbf{r}_t^T \times P \times \mathbf{r}_t} \times \mathbf{r}_t
 $$
 
 * Updating $P$ requires $n \times n$ operations per step, compared with the $n$ operations needed by the delta learning rule, but at least it works...
