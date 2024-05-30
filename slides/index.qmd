@@ -97,7 +97,7 @@ $$
 
 * Readout neurons **linearly** transform the recurrent dynamics into temporal outputs $\mathbf{z}(t)$. 
 
-* **Supervised learning** (delta learning rule, LMS) trains the readout weights to reproduce a target $\mathbf{t}(t)$.
+* **Supervised learning** (delta learning rule, OLS) trains the readout weights to reproduce a target $\mathbf{t}(t)$.
 
 * It is similar to a MLP with one hidden layer, but the hidden layer has dynamics.
 
@@ -211,8 +211,6 @@ $$
 :::
 :::
 
-
-
 * The resulting trajectories over time have complex dynamics and are **chaotic**: the slightest change in the initial conditions generates different trajectories.
 
 :::footer
@@ -236,7 +234,7 @@ $$
     \mathbf{z}(t) = W^\text{OUT} \times \mathbf{r}(t) 
 $$
 
-* The batch **least mean squares** (LMS) regression algorithm using the matrix $\mathbf{R}$ of recorded activations is often used:
+* The batch **ordinary least squares** (OLS) regression algorithm using the matrix $\mathbf{R}$ of recorded activations is often used:
 
 $$
     W^\text{OUT} = (\mathbf{R}^T \times \mathbf{R})^{-1} \times \mathbf{R}^T \times \mathbf{T}
@@ -428,6 +426,8 @@ $$
 
 * Using feedback, there is even no need for an input $I(t)$. The target value $t(t)$ just needs to be used by the readout layer which should learn to minimize the difference.
 
+* A reservoir with feedback can perform autoregression, for example time series prediction.
+
 :::
 :::{.column width=30%}
 
@@ -449,12 +449,14 @@ $$
 $$
 \begin{cases}
     \tau \, \dfrac{d \mathbf{x}(t)}{dt} + \mathbf{x}(t) = W^\text{IN} \times \mathbf{I}(t) + W^\text{REC} \times \mathbf{r}(t) + W^\text{FB} \times \mathbf{z}(t)  \\
+    \\
     \mathbf{r}(t) = \tanh \, \mathbf{x}(t) \\
+    \\
     \mathbf{z}(t) = W^\text{OUT} \times \mathbf{r}(t) \\
 \end{cases}
 $$
 
-* The batch **least mean squares** (LMS) regression algorithm makes the assumption that the samples over time $t$ are **i.i.d**, which they clearly aren't.
+* The batch **ordinary least squares** (OLS) regression algorithm makes the assumption that the samples over time $t$ are **i.i.d**, which they clearly aren't.
 
 $$
     \mathcal{L}(W^\text{OUT}) = \mathbb{E}_t [||\mathbf{t}(t) - W^\text{OUT} \times \mathbf{r}(t)||^2]
@@ -470,13 +472,64 @@ $$
     \Delta W^\text{OUT} = \eta \, (\mathbf{t}(t) - \mathbf{z}(t)) \times \mathbf{r}^T(t)
 $$
 
-* If we want to take the temporal dependencies into account, we would need to apply BPTT to the recurrent weights, but we would lose the interest of reservoirs.
 
-# Recursive least squares
+# Recursive least squares (RLS)
 
-* There exists a version of LMS which is online and allows to perform linear regression incrementally.
+* If we wanted to take the temporal dependencies into account, we would need to apply BPTT to the recurrent weights: bad.
+
+* There exists a version of OLS which is online and allows to perform linear regression incrementally.
 
 * The math is complex, so here are some online resources if you are interested: [here](https://ocw.mit.edu/courses/2-161-signal-processing-continuous-and-discrete-fall-2008/resources/rls/) and [there](https://aleksandarhaber.com/introduction-to-kalman-filter-derivation-of-the-recursive-least-squares-method-with-python-codes/).
+
+* Let's say we have already learned from the $t-1$ first samples, and get a new sample $(\mathbf{z}(t), \mathbf{t}(t))$.
+
+* How do we update the weights 
+
+* The readout weights will be updated online using the error, the input and $P$:
+
+$$
+    \Delta W^\text{OUT} = - \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times P \times \mathbf{r}_t
+$$
+
+where $P$ is a running estimate of the inverse information matrix of the input :
+
+$$
+    P =  (\mathbf{R}^T \times \mathbf{R})^{-1}
+$$
+
+* This implements a form of **adaptive learning rate**: synapses where the uncertainty on the parameter estimates is high will learn faster than those which are certain. 
+
+# Recursive least squares (RLS)
+
+* In practice, the inverse of the information matrix is updated at each time step $t$ using the formula:
+
+$$
+    \Delta P = - \dfrac{(P \times \mathbf{r}_t) \times (P \times \mathbf{r}_t)^T}{1 + \mathbf{r}_t^T \times P \times \mathbf{r}_t}
+$$
+
+and the weight updates are also normalized:
+
+
+$$
+    \Delta W^\text{OUT} = - \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times \dfrac{P}{1 + \mathbf{r}_t^T \times P \times \mathbf{r}_t} \times \mathbf{r}_t
+$$
+
+* Updating $P$ requires $n \times n$ operations per step, compared with the $n$ operations needed by the delta learning rule, but at least it works...
+
+* This is the formula of a single readout neuron ($\mathbf{t}_t$ and $\mathbf{z}_t$ are actually scalars). If you have several output neurons, you need to update several $P$ matrices...
+
+# FORCE Learning
+
+* FORCE learning (first-order reduced and controlled error) consists of feeding back the readout into the reservoir and using RLS.
+
+* FORCE learning allows to stabilize trajectories in the chaotic reservoir and generate complex patterns in an autoregressive manner.
+
+
+![](img/RC-results.png){width=50% fig-align="center"}
+
+:::footer
+@Sussillo2009 Generating coherent patterns of activity from chaotic neural networks. Neuron, 63(4), 544–557. 
+:::
 
 
 # 3 - Taming chaos by learning the recurrent weights
@@ -492,9 +545,9 @@ $$
 :::columns
 :::column
 
-![](img/rc-sussillo1.png)
+![](img/rc-sussillo1.png){width=50% fig-align="center"}
 
-![](img/rc-sussillo2.png)
+![](img/rc-sussillo2.png){width=50% fig-align="center"}
 
 :::
 :::column
@@ -509,6 +562,8 @@ $$
 
 * If we could learn the recurrent weights, we could force the reservoir to have fixed and robust trajectories, while keeping interesting dynamics.
 
+* However, learning in a chaotic system, even with BPTT, is very hard.
+
 :::
 :::
 
@@ -519,14 +574,14 @@ $$
 # Taming chaos by learning the recurrent weights
 
 :::columns
-:::{.column width=70%}
+:::{.column width=50%}
 
 ![](img/rc-buonomano1.png)
 
 :::
-:::{.column width=30%}
+:::{.column width=50%}
 
-* Here a classical network is trained to reproduce handwriting.
+* A classical network is trained to reproduce handwriting.
 
 * The two readout neurons produce a sequence of $(x, y)$ positions for the pen.
 
@@ -539,9 +594,9 @@ $$
 
 # Training the recurrent connections
 
-![](img/rc-sussillo2.png){width=40%}
+![](img/rc-sussillo2.png){width=40% fig-align="center"}
 
-* We have an error signal $\mathbf{t}_t - \mathbf{z}_t$ at each time step.
+* We have an output error signal $\mathbf{t}_t - \mathbf{z}_t$ at each time step.
 
 * Why can't we just apply backpropagation (through time) on the recurrent weights?
 
@@ -551,51 +606,43 @@ $$\mathcal{L}(W, W^\text{OUT}) = \mathbb{E}_{t} [(\mathbf{t}_t - \mathbf{z}_t)^2
 
 # FORCE Learning
 
-* In **FORCE learning**, complex optimization methods such as **recursive least squares** (RLS) have to be used.
 
-* For the readout weights:
+:::columns
+:::{.column width=50%}
 
-$$
-    \Delta W^\text{OUT} = - \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times P \times \mathbf{r}_t
-$$
+![](img/rc-sussillo3.png)
 
-where $P$ is the inverse correlation matrix of the input :
+:::
+:::{.column width=50%}
 
-$$
-    P = (\mathbf{r}_t \times \mathbf{r}_t^T)^{-1}
-$$
+* With **FORCE learning**, we have an error term for the readout weights.
 
-* For the recurrent weights, we need also an error term. 
+* For the recurrent weights, we would also need an error term. 
 
-* It is computed by recording the dynamics during an **initialization trial** $\mathbf{r}^*_t$ and force the recurrent weights to reproduce these dynamics in the learning trials:
+* It can computed by recording the dynamics during an **initialization trial** $\mathbf{r}^*_t$ and forcing the recurrent weights to reproduce these dynamics in the learning trials:
 
 $$
     \Delta W = - \eta \, (\mathbf{r}^*_t - \mathbf{r}_t) \times P \times \mathbf{r}_t
 $$
 
+* This is equivalent to having a fixed, external reserfoir providing the targets.
 
 * See <https://github.com/ReScience-Archives/Vitay-2016> for a reimplementation.
 
+:::
+:::
+
+
 :::footer
 @Sussillo2009 Generating coherent patterns of activity from chaotic neural networks. Neuron, 63(4), 544–557. 
 :::
 
-# FORCE Learning
-
-* This allows to stabilize trajectories in the chaotic reservoir (**taming chaos**) and generate complex patterns.
-
-
-![](img/RC-results.png){width=70%}
-
-:::footer
-@Sussillo2009 Generating coherent patterns of activity from chaotic neural networks. Neuron, 63(4), 544–557. 
-:::
 
 # Taming Chaos in RC networks
 
 * This allows to stabilize trajectories in the chaotic reservoir (**taming chaos**) and generate complex patterns.
 
-![](img/buonomano2.png){width=60%}
+![](img/buonomano2.png){width=50% fig-align="center"}
 
 
 :::footer
@@ -604,7 +651,7 @@ $$
 
 # Taming Chaos in RC networks
 
-![](img/buonomano1.png)
+![](img/buonomano1.png){width=70% fig-align="center"}
 
 :::footer
 @Laje2013 Robust timing and motor patterns by taming chaos in recurrent neural networks. Nature Neuroscience, 16(7), 925–933. 
@@ -620,9 +667,9 @@ $$
 
 # Biologically plausible reward modulated learning in RC
 
-![](img/miconi.png){width=60%}
+![](img/miconi.png){width=60% fig-align="center"}
 
-* Miconi proposed a realistic model of RL learning in a classical reservoir:
+* Miconi proposed a realistic model of reward-based learning in a classical reservoir:
 
 $$
     \tau \frac{dx(t)}{dt} + x(t) = \sum_\text{input} W^\text{IN} \, r^\text{IN}(t) + \sum_\text{rec} W \, r(t) + \xi(t)
@@ -651,7 +698,9 @@ $$
 :::
 :::column
 
-* **Delayed non-match-to-sample** (DNMS) task: respond $t = +1$ when the cue is different from the sample (AB or BA), $t=-1$ otherwise (AA, BB).
+* **Delayed non-match-to-sample** (DNMS) task: 
+    * $t = +1$ when the cue is different from the sample (AB or BA)
+    * $t = -1$ otherwise (AA, BB).
 
 * It is a task involving **working memory**: the first item must be actively remembered in order to produce the response later.
 
@@ -666,9 +715,8 @@ $$
 :::
 :::
 
-* The goal is to maximize the reward (loss function), but we know its value only at the end of a trial.
+* The goal is to maximize the sparse reward function, but we know its value only at the end of a trial: temporal credit assignment.
 
-* Actually supervised learning (minimizing the mean absolute error MAE), but from sparse feedbacks.
 
 :::footer
 @Miconi2017 Biologically plausible learning in recurrent neural networks reproduces neural dynamics observed during cognitive tasks. eLife 6:e20899.
@@ -679,7 +727,7 @@ $$
 :::columns
 :::column
 
-![](img/reward-hebb.jpg)
+![](img/reward-hebb.jpg){fig-align="center"}
 
 :::
 :::column
@@ -687,12 +735,12 @@ $$
 * **Reward-modulated Hebbian learning** changes weights according to the Hebbian product and the change in reward intake:
 
 $$
-    \Delta w_{ij} = \eta \, r_i \, r_j \, (r - \bar{r})
+    \Delta w_{ij} = \eta \, r_i \, r_j \, (R - \bar{R})
 $$
 
-* $\bar{r}$ can be a running average of the rewards:
+* $\bar{R}$ can be a running average of the rewards/returns:
 
-$$\bar{r} \leftarrow \alpha \, \bar{r} + (1-\alpha) \, r$$
+$$\bar{R} \leftarrow \alpha \, \bar{R} + (1-\alpha) \, R$$
 
 * If more reward than usual is received, the weights between correlated neurons should be increased.
 
@@ -713,7 +761,7 @@ $$\bar{r} \leftarrow \alpha \, \bar{r} + (1-\alpha) \, r$$
 :::column
 
 
-![](img/weightperturbation.png)
+![](img/weightperturbation.png){width=70% fig-align="center"}
 
 :::
 :::column
@@ -728,7 +776,7 @@ $$
 and observing the change of reward intake at the end of the episode:
 
 $$
-    \Delta r = r - \bar{r}
+    \Delta R = R - \bar{R}
 $$
 
 :::
@@ -737,16 +785,16 @@ $$
 * If the change is positive (the new network gets higher rewards than before), the weight change is conserved. Otherwise it is thrown away or reversed.
 
 $$
-    \Delta w_{ij} = \eta \, (r - \bar{r}) \, \xi
+    \Delta w_{ij} = \eta \, (R - \bar{R}) \, \xi
 $$
 
 * **Weight perturbation** is somehow a way to estimate the gradient of the loss function locally:
 
 $$
-    \frac{\partial r(\theta)}{\partial w_{ij}} \approx \frac{\Delta r}{\Delta w_{ij}} = \frac{r - \bar{r}}{ w_{ij} + \xi - w_{ij} }
+    \frac{\partial R(\theta)}{\partial w_{ij}} \approx \frac{\Delta R}{\Delta w_{ij}} = \frac{R - \bar{R}}{ w_{ij} + \xi - w_{ij} }
 $$
 
-* Core principle of genetic algorithms for NN (e.g. NEAT), but not biologically realistic...
+* Core principle of genetic algorithms for NN (e.g. NEAT), but not really biologically realistic...
 
 # Node-perturbation
 
@@ -765,7 +813,7 @@ $$
 * If a higher postsynaptic activity leads to more reward, then weights from correlated pre-synaptic neurons should be increased:
 
 $$
-    \Delta w_{ij} = \eta \, (\sum_t r_i \, \xi_j) \, (r - \bar{r})
+    \Delta w_{ij} = \eta \, (\sum_t r_i \, \xi_j) \, (R - \bar{R})
 $$
 
 * A trace of the perturbations must be maintained, as learning occurs only at the end of the trial.
@@ -784,12 +832,19 @@ $$
 * Miconi's idea was to couple node-perturbation (Fiete et al. 2006) with **Exploratory-Hebbian** learning (Legenstein et al., 2010).
 
 $$
-    \Delta w_{ij} = \eta \, r_i \, (x_j - \bar{x_j}) \, (r - \bar{r})
+    \Delta w_{ij} = \eta \, r_i \, (x_j - \bar{x_j}) \, (R - \bar{R})
 $$
 
 where $\bar{x_j}$ is a running average of the postsynaptic activity (a trace of its activity).
 
 * The difference $x_j - \bar{x_j}$ contains information about the perturbation, but is local to the synapse (biologically realistic).
+
+* However, the perturbation is canceled by the relaxation. Need for a non-linearity:
+
+$$
+    \Delta w_{ij} = \eta \, r_i \, (x_j - \bar{x_j})^3  \, (R - \bar{R})
+$$
+
 
 :::
 :::column
@@ -801,26 +856,20 @@ where $\bar{x_j}$ is a running average of the postsynaptic activity (a trace of 
 :::
 
 
-* However, the perturbation is canceled by the relaxation. Need for a non-linearity:
-
-$$
-    \Delta w_{ij} = \eta \, r_i \, (x_j - \bar{x_j})^3  \, (r - \bar{r})
-$$
 
 :::footer
-@Legenstein2010 A reward-modulated hebbian learning rule can explain experimentally observed network reorganization in a brain control task. Journal of Neuroscience 30:8400–8410. 
+@Legenstein2010 A reward-modulated hebbian learning rule can explain experimentally observed network reorganization in a brain control task. Journal of Neuroscience. 
 :::
 
 # Miconi's learning rule
 
-![](img/miconi.png){width=60%}
+![](img/miconi.png){width=50% fig-align="center"}
 
 1. Apply randomly at f=3Hz a perturbation of all the nodes in the reservoir.
 
 $$
     x_j \rightarrow x_j + \xi_j
 $$
-
 
 2. Maintain a non-linear **eligibility trace** of the perturbation during the trial.
 
@@ -831,7 +880,7 @@ $$
 3. At the end of the trial, train all weights using the eligibility trace and the change in performance:
 
 $$
-    \Delta w_{ij} = \eta \, e_{ij} \, (r - \bar{r})
+    \Delta w_{ij} = \eta \, e_{ij} \, (R - \bar{R})
 $$
 
 
@@ -855,27 +904,21 @@ $$
 
 * The power of the network does not lie in the readout neurons, but in the dynamics of the reservoir: trajectories are discovered and stabilized using RL.
 
-* The only "imperfection" is that learning is actually error-driven:
+* The only "imperfection" is that learning is actually error-driven, not success-driven:
 
 $$
     r = - |t - y|
 $$
 
-* Still looking for a pure RL implementation.
 
 :::
 :::
 
 # Results : controlling a robotic arm
 
-:::columns
-:::column
 
+![](img/miconi-robot.png){width=50% fig-align="center"}
 
-![](img/miconi-robot.png)
-
-:::
-:::column
 
 
 * 16 motor neurons to control the muscles of an arm.
@@ -884,9 +927,20 @@ $$
 
 * Error is the remaining distance at the end of the trial.
 
-:::
-:::
 
+# Summary of reservoir computing
+
+* The vanilla formulation of RC with fixed recurrent weights is very powerful compared to classical RNNs (according to LLama3):
+
+1. **Improved long-term dependencies**: RC can learn longer-range dependencies than traditional RNNs, which are limited by their recurrent connections.
+2. **Faster training times**: RC typically requires less computation and memory during training compared to RNNs, making it more efficient for large datasets.
+3. **Better handling of sparse data**: RC is better suited for dealing with sparse or irregularly sampled time series data, as it doesn't require fixed-size input sequences like traditional RNNs.
+4. **Improved robustness to noise and outliers**: RC has been shown to be more robust to noisy or outlier-filled data due to its ability to learn from a smaller window of past information.
+5. **Reduced overfitting**: RC's architecture can help prevent overfitting by focusing on local patterns in the data, rather than trying to capture long-term dependencies that may not be relevant.
+6. **Improved interpretability**: The reservoir's fixed weights and simple recurrent connections make it easier to understand how the model is processing information, compared to traditional RNNs with complex weight updates.
+7. **Scalability**: RC can be applied to larger datasets and more complex tasks than traditional RNNs, thanks to its ability to handle sparse data and improved computational efficiency.
+
+* Learning the recurrent weights to stabilize the dynamics is much more difficult, and requires advanced/expensive  optimization methods (RLS) or gradient-free approaches such as RL and evolution.
 
 # References
 

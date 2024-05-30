@@ -8,7 +8,7 @@ author:
     affiliation-url: https://tu-chemnitz.de
     orcid: 0000-0001-5229-2349
 
-abstract: This website contains the materials for the lecture on "Reservoir computing" of the module **Neurorobotik** at the Technische Universität Chemnitz. 
+abstract: Materials for the lecture on "Reservoir computing" of the module **Neurorobotik** at the Technische Universität Chemnitz. 
 
 echo: false
 ---
@@ -25,13 +25,21 @@ The slides of the lecture are available [here](slides/index.qmd){target="_blank"
 
 </div>
 
+#### Recommended reading {-}
+
+* Sussillo, D., and Abbott, L. F. (2009). Generating coherent patterns of activity from chaotic neural networks. *Neuron* 63, 544–57. [doi:10.1016/j.neuron.2009.07.018](https://doi.org/10.1016/j.neuron.2009.07.018). [(pdf)](pdf/SussilloAbbott2009.pdf)
+
+* Laje, R., and Buonomano, D. V. (2013). Robust timing and motor patterns by taming chaos in recurrent neural networks. *Nature neuroscience* 16, 925–33. [doi:10.1038/nn.3405](https://doi.org/10.1038/nn.3405). [(pdf)](pdf/LajeBuonomano2013.pdf)
+
+* Miconi, T. (2017). Biologically plausible learning in recurrent neural networks reproduces neural dynamics observed during cognitive tasks. *eLife* 6. [doi:10.7554/elife.20899](https://doi.org/10.7554/elife.20899). [(pdf)](pdf/Miconi2017.pdf)
+
 ## Practicals
 
 ```{python}
 from IPython.display import Markdown
 
-repo = "https://raw.githubusercontent.com/hamkerlab/neurorobotik-reservoir/notebooks/main"
-colab = "https://colab.research.google.com/github/hamkerlab/neurorobotik-reservoir/notebooks/blob/main"
+repo = "https://raw.githubusercontent.com/hamkerlab/neurorobotik-reservoir/main/notebooks"
+colab = "https://colab.research.google.com/github/hamkerlab/neurorobotik-reservoir/blob/main/notebooks"
 
 def table_exercise(exs):
     text = """

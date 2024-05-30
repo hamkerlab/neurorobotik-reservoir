@@ -13,8 +13,6 @@ website:
     foreground: black
     pinned: true
     right:
-      - text: "Materials"
-        file: index.qmd
       - icon: github
         href: https://github.com/hamkerlab/neurorobotik-reservoir
         aria-label: GitHub
