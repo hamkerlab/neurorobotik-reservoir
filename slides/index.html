@@ -760,6 +760,13 @@
 
 <section id="applications-of-reservoir-computing" class="title-slide slide level1 center">
 <h1>Applications of Reservoir Computing</h1>
+<div class="footer">
+<p>See <span class="citation" data-cites="Zhang2023">Zhang and Vargas (<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span>.</p>
+</div>
+</section>
+
+<section id="applications-of-reservoir-computing-1" class="title-slide slide level1 center">
+<h1>Applications of Reservoir Computing</h1>
 <ul>
 <li><strong>Forecasting</strong>: ESN are able to predict the future of chaotic systems (stock market, weather) much better than static NN.</li>
 </ul>
@@ -773,7 +780,7 @@
 </div>
 </section>
 
-<section id="applications-of-reservoir-computing-1" class="title-slide slide level1 center">
+<section id="applications-of-reservoir-computing-2" class="title-slide slide level1 center">
 <h1>Applications of Reservoir Computing</h1>
 <ul>
 <li><strong>Physics:</strong> RC networks can be used to predict the evolution of chaotic systems (Lorenz, Mackey-Glass, Kuramoto-Sivashinsky) at very long time scales (8 times the Lyapunov time).</li>
@@ -784,7 +791,7 @@
 </div>
 </section>
 
-<section id="applications-of-reservoir-computing-2" class="title-slide slide level1 center">
+<section id="applications-of-reservoir-computing-3" class="title-slide slide level1 center">
 <h1>Applications of Reservoir Computing</h1>
 <ul>
 <li><p><strong>NLP:</strong> RC networks can grasp the dynamics of language, i.e.&nbsp;its <strong>grammar</strong>.</p></li>
@@ -966,7 +973,7 @@
 <li><p>The readout weights will be updated online using the error, the input and <span class="math inline">P</span>:</p></li>
 </ul>
 <p><span class="math display">
-    \Delta W^\text{OUT} = - \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times P \times \mathbf{r}_t
+    \Delta W^\text{OUT} = \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times P \times \mathbf{r}_t
 </span></p>
 <p>where <span class="math inline">P</span> is a running estimate of the inverse information matrix of the input :</p>
 <p><span class="math display">
@@ -987,7 +994,7 @@
 </span></p>
 <p>and the weight updates are also normalized:</p>
 <p><span class="math display">
-    \Delta W^\text{OUT} = - \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times \dfrac{P}{1 + \mathbf{r}_t^T \times P \times \mathbf{r}_t} \times \mathbf{r}_t
+    \Delta W^\text{OUT} = \eta \, (\mathbf{t}_t - \mathbf{z}_t) \times \dfrac{P}{1 + \mathbf{r}_t^T \times P \times \mathbf{r}_t} \times \mathbf{r}_t
 </span></p>
 <ul>
 <li><p>Updating <span class="math inline">P</span> requires <span class="math inline">n \times n</span> operations per step, compared with the <span class="math inline">n</span> operations needed by the delta learning rule, but at least it works…</p></li>
@@ -1463,6 +1470,9 @@ Sussillo, D., and Abbott, L. F. (2009). Generating coherent patterns of activity
 </div>
 <div id="ref-Tanaka2019a" class="csl-entry" role="listitem">
 Tanaka, G., Yamane, T., Héroux, J. B., Nakane, R., Kanazawa, N., Takeda, S., et al. (2019). Recent advances in physical reservoir computing: <span>A</span> review. <em>Neural Networks</em> 115, 100–123. doi:<a href="https://doi.org/10.1016/j.neunet.2019.03.005">10.1016/j.neunet.2019.03.005</a>.
+</div>
+<div id="ref-Zhang2023" class="csl-entry" role="listitem">
+Zhang, H., and Vargas, D. V. (2023). A <span>Survey</span> on <span>Reservoir Computing</span> and its <span>Interdisciplinary Applications Beyond Traditional Machine Learning</span>. doi:<a href="https://doi.org/10.1109/ACCESS.2023.3299296">10.1109/ACCESS.2023.3299296</a>.
 </div>
 </div>
 </section>
