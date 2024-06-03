@@ -558,12 +558,13 @@
 </span></p>
 <ul>
 <li><p><span class="math inline">g</span> is a <strong>scaling factor</strong> characterizing the strength of the recurrent connections, what leads to different dynamics.</p></li>
+<li><p><span class="math inline">g</span> is linked to the <strong>spectral radius</strong> of the recurrent weight matrix (highest eigenvalue).</p></li>
 <li><p>The recurrent weight matrix is often <strong>sparse</strong>:</p>
 <ul>
 <li><p>A subset of the possible connections <span class="math inline">N \times N</span> has non-zero weights.</p></li>
 <li><p>Typically, only 10% of the possible connections are created.</p></li>
 </ul></li>
-<li><p>Depending on the value of <span class="math inline">g</span>, the dynamics of the reservoir exhibit different attractors.</p></li>
+<li><p>Depending on the value of <span class="math inline">g</span>, the dynamics of the reservoir can exhibit different stable or cyclic attractors.</p></li>
 <li><p>Let’s have a look at the activity of a few neurons after the presentation of a short input.</p></li>
 </ul>
 </section>
@@ -982,6 +983,9 @@
 <ul>
 <li>This implements a form of <strong>adaptive learning rate</strong>: synapses where the uncertainty on the parameter estimates is high will learn faster than those which are certain.</li>
 </ul>
+<div class="footer">
+<p><span class="citation" data-cites="Haykin2002">Haykin (<a href="#/references" role="doc-biblioref" onclick="">2002</a>)</span> Adaptive filter theory. Prentice Hall.</p>
+</div>
 </section>
 
 <section id="recursive-least-squares-rls-1" class="title-slide slide level1 center">
@@ -1108,7 +1112,7 @@
     \Delta W = - \eta \, (\mathbf{r}^*_t - \mathbf{r}_t) \times P \times \mathbf{r}_t
 </span></p>
 <ul>
-<li><p>This is equivalent to having a fixed, external reserfoir providing the targets.</p></li>
+<li><p>This is equivalent to having a fixed, external reservoir providing the targets.</p></li>
 <li><p>See <a href="https://github.com/ReScience-Archives/Vitay-2016" class="uri">https://github.com/ReScience-Archives/Vitay-2016</a> for a reimplementation.</p></li>
 </ul>
 </div>
@@ -1164,10 +1168,10 @@
 <li>Miconi proposed a realistic model of reward-based learning in a classical reservoir:</li>
 </ul>
 <p><span class="math display">
-    \tau \frac{dx(t)}{dt} + x(t) = \sum_\text{input} W^\text{IN} \, r^\text{IN}(t) + \sum_\text{rec} W \, r(t) + \xi(t)
+    \tau \frac{d \mathbf{x}(t)}{dt} + \mathbf{x}(t) = W^\text{IN} \times \mathbf{I}(t) +  W \times \mathbf{r}(t)
 </span></p>
 <p><span class="math display">
-    r(t) = \tanh(x(t))
+    \mathbf{r}(t) = \tanh \mathbf{x}(t)
 </span></p>
 <ul>
 <li><p>However, there are NO readout neurons: a random neuron of the reservoir is picked as output neuron.</p></li>
@@ -1434,6 +1438,9 @@ Fiete, I. R., and Seung, H. S. (2006). Gradient <span>Learning</span> in <span>S
 </div>
 <div id="ref-Frega2014" class="csl-entry" role="listitem">
 Frega, M., Tedesco, M., Massobrio, P., Pesce, M., and Martinoia, S. (2014). Network dynamics of <span>3D</span> engineered neuronal cultures: A new experimental model for in-vitro electrophysiology. <em>Scientific Reports</em> 4, 1–14. doi:<a href="https://doi.org/10.1038/srep05489">10.1038/srep05489</a>.
+</div>
+<div id="ref-Haykin2002" class="csl-entry" role="listitem">
+Haykin, S. S. (2002). <em>Adaptive filter theory</em>. Prentice Hall.
 </div>
 <div id="ref-Hinaut2013" class="csl-entry" role="listitem">
 Hinaut, X., and Dominey, P. F. (2013). Real-<span>Time Parallel Processing</span> of <span>Grammatical Structure</span> in the <span>Fronto-Striatal System</span>: <span>A Recurrent Network Simulation Study Using Reservoir Computing</span>. <em>PLOS ONE</em> 8, e52946. doi:<a href="https://doi.org/10.1371/journal.pone.0052946">10.1371/journal.pone.0052946</a>.
