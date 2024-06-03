@@ -13,6 +13,7 @@ author:
 bibliography: references.bib
 csl: ../assets/frontiers.csl
 
+qrcode:  https://hamkerlab.github.io/neurorobotik-reservoir
 ---
 
 
@@ -117,13 +118,15 @@ $$
 
 * $g$ is a **scaling factor** characterizing the strength of the recurrent connections, what leads to different dynamics.
 
+* $g$ is linked to the **spectral radius** of the recurrent weight matrix (highest eigenvalue).
+
 * The recurrent weight matrix is often **sparse**: 
 
     * A subset of the possible connections $N \times N$ has non-zero weights.
 
     * Typically, only 10% of the possible connections are created.
 
-* Depending on the value of $g$, the dynamics of the reservoir exhibit different attractors.
+* Depending on the value of $g$, the dynamics of the reservoir can exhibit different stable or cyclic attractors.
 
 * Let's have a look at the activity of a few neurons after the presentation of a short input.
 
@@ -505,6 +508,10 @@ $$
 
 * This implements a form of **adaptive learning rate**: synapses where the uncertainty on the parameter estimates is high will learn faster than those which are certain. 
 
+:::footer
+@Haykin2002 Adaptive filter theory. Prentice Hall.
+:::
+
 # Recursive least squares (RLS)
 
 * In practice, the inverse of the information matrix is updated at each time step $t$ using the formula:
@@ -631,7 +638,7 @@ $$
     \Delta W = - \eta \, (\mathbf{r}^*_t - \mathbf{r}_t) \times P \times \mathbf{r}_t
 $$
 
-* This is equivalent to having a fixed, external reserfoir providing the targets.
+* This is equivalent to having a fixed, external reservoir providing the targets.
 
 * See <https://github.com/ReScience-Archives/Vitay-2016> for a reimplementation.
 
@@ -678,11 +685,11 @@ $$
 * Miconi proposed a realistic model of reward-based learning in a classical reservoir:
 
 $$
-    \tau \frac{dx(t)}{dt} + x(t) = \sum_\text{input} W^\text{IN} \, r^\text{IN}(t) + \sum_\text{rec} W \, r(t) + \xi(t)
+    \tau \frac{d \mathbf{x}(t)}{dt} + \mathbf{x}(t) = W^\text{IN} \times \mathbf{I}(t) +  W \times \mathbf{r}(t)
 $$
 
 $$
-    r(t) = \tanh(x(t))
+    \mathbf{r}(t) = \tanh \mathbf{x}(t)
 $$
 
 * However, there are NO readout neurons: a random neuron of the reservoir is picked as output neuron.
