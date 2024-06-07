@@ -66,7 +66,8 @@ Simple ESN with the readout trained offline.""",
 FORCE learning as introduced in (Sussillo and Abbott, 2009).""",
   '3-LajeBuonomano' : """**3 - Taming chaos**\\
 Taming chaos by FORCE learning the recurrent weights as in (Laje and Buonomano, 2013).""",
-
+  '4-Miconi' : """**4 - Reward-guided learning**\\
+Biologically plausible reinforcement learning in recurrent neural networks (Miconi, 2017).""",
 }
 
 table_exercise(exs)
