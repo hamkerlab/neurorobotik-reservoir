@@ -64,6 +64,8 @@ exs = {
 Simple ESN with the readout trained offline.""",
   '2-FORCE' : """**2 - FORCE learning**\\
 FORCE learning as introduced in (Sussillo and Abbott, 2009).""",
+  '3-LajeBuonomano' : """**3 - Taming chaos**\\
+Taming chaos by FORCE learning the recurrent weights as in (Laje and Buonomano, 2013).""",
 
 }
 

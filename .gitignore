@@ -2,4 +2,4 @@
 .quarto
 /.quarto/
 docs/
-notebooks/*.pdf
+notebooks/annarchy/
