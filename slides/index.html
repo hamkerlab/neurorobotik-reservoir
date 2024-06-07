@@ -449,6 +449,18 @@
     </div>
   
   
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+  <div style="display: flex; justify-content: center; text-align: center;" id="qrcode"></div>
+  <script type="text/javascript">
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: "https://hamkerlab.github.io/neurorobotik-reservoir",
+        width: 150,
+        height: 150,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+  </script>
     
   </section>
 <section id="reservoir-computing" class="title-slide slide level1 center">

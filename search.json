@@ -18,6 +18,6 @@
     "href": "index.html#practicals",
     "title": "Neurorobotik - Reservoir computing",
     "section": "Practicals",
-    "text": "Practicals\n\n\n\n\n\n\nNotebook\nSolution\n\n\n\n\n1 - Vanilla ESN\nSimple ESN with the readout trained offline.\nipynb, colab\nipynb, colab\n\n\n2 - FORCE learning\nFORCE learning as introduced in (Sussillo and Abbott, 2009).\nipynb, colab\nipynb, colab"
+    "text": "Practicals\n\n\n\n\n\n\nNotebook\nSolution\n\n\n\n\n1 - Vanilla ESN\nSimple ESN with the readout trained offline.\nipynb, colab\nipynb, colab\n\n\n2 - FORCE learning\nFORCE learning as introduced in (Sussillo and Abbott, 2009).\nipynb, colab\nipynb, colab\n\n\n3 - Taming chaos\nTaming chaos by FORCE learning the recurrent weights as in (Laje and Buonomano, 2013).\nipynb, colab\nipynb, colab"
   }
 ]
